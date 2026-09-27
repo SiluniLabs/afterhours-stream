@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: [self-hosted, acpl-forum]
+    runs-on: [self-hosted]
     outputs:
       image_path: ${{ steps.vars.outputs.IMAGE_PATH }}
       tag: ${{ steps.vars.outputs.TAG }}
@@ -41,7 +41,7 @@ jobs:
           docker push "$IMAGE"
 
   deploy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted]
     needs: build
 
     steps:
