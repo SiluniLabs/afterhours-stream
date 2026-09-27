@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="fr">
+  <head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <meta name="theme-color" content="#07110f">
+    <title>Afterhours | Stream starting soon</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Barlow+Condensed:wght@500;600;700;800&family=DM+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+    <script src="config.js" defer></script>
+    <script src="https://cdn.jsdelivr.net/npm/phaser@3.90.0/dist/phaser.min.js" defer></script>
+    <script src="game.js" defer></script>
+  </head>
+  <body>
+    <main class="stream-screen" aria-label="Écran de démarrage du stream">
+      <div id="game" class="game-layer" aria-hidden="true"></div>
+      <header class="topbar">
+        <div class="brand-lockup">
+          <span class="brand-mark" aria-hidden="true"><i></i><i></i><i></i></span>
+          <span class="brand-copy"><strong>AFTERHOURS</strong><small>THE LIVING ARENA</small></span>
+        </div>
+        <div class="team-scoreboard" aria-label="Score des équipes">
+          <div class="team-score" data-team="left">
+            <span class="team-name">CAMP GAUCHE</span>
+            <span class="team-metric team-alive-metric"><strong class="team-alive-count">0</strong><small>ACTIFS</small></span>
+            <span class="team-metric team-kill-metric"><strong class="team-kill-count">0</strong><small>KOs</small></span>
+          </div>
+          <span class="team-versus">VS</span>
+          <div class="team-score" data-team="right">
+            <span class="team-name">CAMP DROIT</span>
+            <span class="team-metric team-alive-metric"><strong class="team-alive-count">0</strong><small>ACTIFS</small></span>
+            <span class="team-metric team-kill-metric"><strong class="team-kill-count">0</strong><small>KOs</small></span>
+          </div>
+        </div>
+        <div class="population" aria-live="polite">
+          <span class="population-label">SUR LE TERRAIN</span>
+          <strong><span id="actor-count">0</span><span class="population-divider">/</span><span id="actor-limit">50</span></strong>
+        </div>
+      </header>
+      <section class="title-block" aria-label="Le stream va bientôt commencer">
+        <span class="eyebrow"><span></span> UN INSTANT, ON ARRIVE</span>
+        <h1>STREAM<br><span>STARTING SOON</span></h1>
+        <p>La nuit s'installe. Le monde, lui, ne s'arrête jamais.</p>
+      </section>
+      <footer class="bottombar">
+        <div class="footer-note"><span class="footer-glyph">✳</span><span>UN PETIT MONDE, EN MOUVEMENT</span></div>
+        <div class="arrival" aria-live="polite"><span class="arrival-indicator"></span><span id="arrival-copy">LE MONDE PREND VIE</span></div>
+        <div class="footer-coordinates">LIVE WORLD <span>—</span> 51°30' N</div>
+      </footer>
+      <div class="frame-corner frame-corner--tl" aria-hidden="true"></div>
+      <div class="frame-corner frame-corner--tr" aria-hidden="true"></div>
+      <div class="frame-corner frame-corner--bl" aria-hidden="true"></div>
+      <div class="frame-corner frame-corner--br" aria-hidden="true"></div>
+    </main>
+  </body>
+</html>
