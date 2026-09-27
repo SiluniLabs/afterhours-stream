@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   build:
-    runs-on: [self-hosted]
+    runs-on: cluster-synced
     outputs:
       image_path: ${{ steps.vars.outputs.IMAGE_PATH }}
       tag: ${{ steps.vars.outputs.TAG }}
@@ -41,7 +41,7 @@ jobs:
           docker push "$IMAGE"
 
   deploy:
-    runs-on: [self-hosted]
+    runs-on: cluster-synced
     needs: build
 
     steps:
