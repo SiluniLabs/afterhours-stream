@@ -1,0 +1,73 @@
+name: Deploy Afterhours Stream
+
+on:
+  push:
+    tags:
+      - "*"
+
+concurrency:
+  group: deploy-afterhours-stream
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: [self-hosted, acpl-forum]
+    outputs:
+      image_path: ${{ steps.vars.outputs.IMAGE_PATH }}
+      tag: ${{ steps.vars.outputs.TAG }}
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+
+      - name: Get variables
+        id: vars
+        shell: bash
+        run: |
+          IMAGE_PATH="$(echo "$GITHUB_REPOSITORY" | tr '[:upper:]' '[:lower:]')"
+          TAG="${GITHUB_REF#refs/tags/}"
+
+          echo "IMAGE_PATH=$IMAGE_PATH" >> "$GITHUB_OUTPUT"
+          echo "TAG=$TAG" >> "$GITHUB_OUTPUT"
+
+      - name: Build and push image
+        env:
+          REGISTRY: ${{ secrets.REGISTRY }}
+          IMAGE_PATH: ${{ steps.vars.outputs.IMAGE_PATH }}
+          TAG: ${{ steps.vars.outputs.TAG }}
+        run: |
+          IMAGE="$REGISTRY/$IMAGE_PATH:$TAG"
+          docker build --label "build-date=$(date -u +%Y-%m-%dT%H:%M:%SZ)" -t "$IMAGE" .
+          docker push "$IMAGE"
+
+  deploy:
+    runs-on: ubuntu-latest
+    needs: build
+
+    steps:
+      - name: Checkout Argo CD repository
+        uses: actions/checkout@v4
+        with:
+          repository: Siluni-svg/cluster-synced
+          token: ${{ secrets.ARGOCD_TOKEN }}
+          path: argocd
+
+      - name: Install yq
+        run: |
+          sudo wget -q https://github.com/mikefarah/yq/releases/latest/download/yq_linux_amd64 -O /usr/bin/yq
+          sudo chmod +x /usr/bin/yq
+
+      - name: Update image tag
+        working-directory: argocd/apps/afterhours-stream
+        env:
+          TAG: ${{ needs.build.outputs.tag }}
+        run: yq -i '(.images[] | select(.name == "afterhours-stream").newTag) = strenv(TAG)' kustomization.yaml
+
+      - name: Commit and push deployment update
+        working-directory: argocd
+        run: |
+          git config user.name "github-actions"
+          git config user.email "github-actions@github.com"
+          git add apps/afterhours-stream/kustomization.yaml
+          git commit -m "deploy afterhours-stream ${{ needs.build.outputs.tag }}" || exit 0
+          git push

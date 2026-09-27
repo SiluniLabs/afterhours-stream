@@ -41,6 +41,19 @@ Pour consulter les journaux :
 docker compose logs -f
 ```
 
+## Publication et déploiement
+
+Le workflow GitHub Actions `.github/workflows/docker-image.yml` se déclenche à chaque push de tag. Il construit l'image, la publie sous `registry.siluni.fr/siluni-svg/afterhours-stream:<tag>`, puis met à jour le tag dans `cluster-synced` pour qu'Argo CD déploie la nouvelle version.
+
+Pour publier une version :
+
+```sh
+git tag v1.0.0
+git push origin v1.0.0
+```
+
+Le dépôt GitHub doit disposer des secrets `REGISTRY` (hôte du registre) et `ARGOCD_TOKEN` (droit d'écriture sur `Siluni-svg/cluster-synced`). Le runner self-hosted doit être disponible avec les labels `self-hosted` et `acpl-forum`. L'Ingress du cluster utilise `afterhours.siluni.fr` ; le DNS de ce nom doit pointer vers Traefik.
+
 ## Configuration OBS
 
 1. Ajouter une source **Navigateur** à la scène OBS.
